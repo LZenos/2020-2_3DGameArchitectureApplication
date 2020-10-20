@@ -402,7 +402,6 @@
     <ClInclude Include="include\GL\glew.h" />
     <ClInclude Include="include\GL\glxew.h" />
     <ClInclude Include="include\GL\wglew.h" />
-    <ClInclude Include="IRenderable.h" />
     <ClInclude Include="IUpdatable.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Object_Camera.h" />

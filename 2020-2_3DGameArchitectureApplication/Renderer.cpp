@@ -5,10 +5,8 @@
 #include "Object_Camera.h"
 
 #include <stdio.h>
-#include <iostream>
 #include <fstream>
 #include <sstream>
-#include <Windows.h>
 
 #pragma comment(lib, "OpenGL32.lib")
 #pragma comment(lib, "lib-vc2017/glew32.lib")
@@ -17,7 +15,8 @@
 
 Renderer::Renderer()
 {
-
+	_renderableObjList.clear();
+	_updatableObjList.clear();
 }
 
 Renderer::~Renderer()
@@ -109,84 +108,112 @@ bool Renderer::IsWindowClose()
 			glfwWindowShouldClose(window) == 0);
 }
 
-void Renderer::BindCamera(Camera* camera)
+
+void Renderer::AddObject(RenderableObject* obj)
 {
+	_renderableObjList.push_back(obj);
+}
+
+void Renderer::AddCamera(Camera* camera)
+{
+	_usingCamera = camera;
+	
 	_projectionMatrix = glm::perspective(glm::radians(camera->GetFOV()), camera->GetAspect(), camera->GetNear(), camera->GetFar());
 	_viewMatrix = glm::lookAt(camera->GetObjectLocation(), camera->GetAimPos(), camera->GetUpVector());
 	_modelMatrix = glm::mat4(1.0f);
 }
 
+void Renderer::AddUpdatableObj(IUpdatable* obj)
+{
+	_updatableObjList.push_back(obj);
+}
 
-void Renderer::ClearScreen()
+
+void Renderer::Update()
+{
+	printf("\n");
+	
+	for (int i = 0; i < _updatableObjList.size(); i++)
+	{
+		_updatableObjList[i]->Update();
+	}
+}
+
+void Renderer::Draw()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	system("cls");
-}
-
-void Renderer::Draw(RenderableObject* obj)
-{
+	
+	
 	glUseProgram(_programID);
 
-	glm::mat4 model_translate = glm::translate(glm::mat4(1.0f), obj->GetObjectLocation());
+	_projectionMatrix = glm::perspective(glm::radians(_usingCamera->GetFOV()), _usingCamera->GetAspect(), _usingCamera->GetNear(), _usingCamera->GetFar());
+	_viewMatrix = glm::lookAt(_usingCamera->GetObjectLocation(), _usingCamera->GetAimPos(), _usingCamera->GetUpVector());
+	_modelMatrix = glm::mat4(1.0f);
 
-	_MVP = _projectionMatrix * _viewMatrix * model_translate * _modelMatrix;
+	for (int i = 0; i < _renderableObjList.size(); i++)
+	{
+		glm::mat4 model_translate = glm::translate(glm::mat4(1.0f), _renderableObjList[i]->GetObjectLocation());
 
-	glUniformMatrix4fv(_matrixID, 1, GL_FALSE, &_MVP[0][0]);
-	glUniformMatrix4fv(_modelMatrixID, 1, GL_FALSE, &_modelMatrix[0][0]);
-	glUniformMatrix4fv(_viewMatrixID, 1, GL_FALSE, &_viewMatrix[0][0]);
+		_MVP = _projectionMatrix * _viewMatrix * model_translate * _modelMatrix;
 
-	glUniform3f(_lightID, _lightPos.x - obj->GetObjectLocation().x, _lightPos.y - obj->GetObjectLocation().y, _lightPos.z - obj->GetObjectLocation().z);
+		glUniformMatrix4fv(_matrixID, 1, GL_FALSE, &_MVP[0][0]);
+		glUniformMatrix4fv(_modelMatrixID, 1, GL_FALSE, &_modelMatrix[0][0]);
+		glUniformMatrix4fv(_viewMatrixID, 1, GL_FALSE, &_viewMatrix[0][0]);
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, obj->GetTexture());
-	glUniform1i(_textureID, 0);
+		glUniform3f(
+			_lightID, 
+			_lightPos.x - _renderableObjList[i]->GetObjectLocation().x, 
+			_lightPos.y - _renderableObjList[i]->GetObjectLocation().y, 
+			_lightPos.z - _renderableObjList[i]->GetObjectLocation().z);
 
-
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, obj->GetVertexBuffer());
-	glVertexAttribPointer(
-		0,
-		3,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		(void*)0
-	);
-
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, obj->GetUVBuffer());
-	glVertexAttribPointer(
-		1,
-		2,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		(void*)0
-	);
-
-	glEnableVertexAttribArray(2);
-	glBindBuffer(GL_ARRAY_BUFFER, obj->GetNormalBuffer());
-	glVertexAttribPointer(
-		2,
-		3,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		(void*)0
-	);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, _renderableObjList[i]->GetTexture());
+		glUniform1i(_textureID, 0);
 
 
-	glDrawArrays(GL_TRIANGLES, 0, obj->GetVertexSize());
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, _renderableObjList[i]->GetVertexBuffer());
+		glVertexAttribPointer(
+			0,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
+		);
 
-	printf("%s (%.2f, %.2f, %.2f)\n", obj->GetName().c_str(), obj->GetObjectLocation().x, obj->GetObjectLocation().y, obj->GetObjectLocation().z);
+		glEnableVertexAttribArray(1);
+		glBindBuffer(GL_ARRAY_BUFFER, _renderableObjList[i]->GetUVBuffer());
+		glVertexAttribPointer(
+			1,
+			2,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
+		);
 
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(2);
-}
+		glEnableVertexAttribArray(2);
+		glBindBuffer(GL_ARRAY_BUFFER, _renderableObjList[i]->GetNormalBuffer());
+		glVertexAttribPointer(
+			2,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
+		);
 
-void Renderer::EndDraw()
-{
+
+		glDrawArrays(GL_TRIANGLES, 0, _renderableObjList[i]->GetVertexSize());
+
+
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);
+	}
+
+
 	glfwSwapBuffers(window);
 	glfwPollEvents();
 }
@@ -195,6 +222,9 @@ void Renderer::ReleaseMemory()
 {
 	glDeleteProgram(_programID);
 	glDeleteVertexArrays(1, &_vertexArrayID);
+
+	_renderableObjList.clear();
+	_updatableObjList.clear();
 
 	glfwTerminate();
 }

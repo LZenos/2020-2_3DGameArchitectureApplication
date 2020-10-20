@@ -2,6 +2,9 @@
 
 #include "FileManager.h"
 
+#include <stdio.h>
+#include <string>
+
 
 RenderableObject::RenderableObject(std::string object_name) : Object(object_name)
 {
@@ -13,6 +16,12 @@ RenderableObject::RenderableObject(std::string object_name) : Object(object_name
 RenderableObject::~RenderableObject()
 {
 
+}
+
+
+void RenderableObject::Update()
+{
+	printf("%s (%.2f, %.2f, %.2f)\n", GetName().c_str(), GetObjectLocation().x, GetObjectLocation().y, GetObjectLocation().z);
 }
 
 

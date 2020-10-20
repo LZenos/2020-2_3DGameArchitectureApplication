@@ -19,6 +19,8 @@ public:
 	RenderableObject(std::string object_name);
 	~RenderableObject();
 
+	virtual void Update() override;
+
 	GLuint GetTexture() const;
 
 	GLuint GetVertexBuffer() const;

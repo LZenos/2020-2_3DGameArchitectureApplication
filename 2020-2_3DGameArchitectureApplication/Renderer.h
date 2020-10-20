@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ICleanup.h"
+#include "IUpdatable.h"
 
 #include <vector>
 
@@ -19,6 +20,10 @@ class Renderer : public ICleanUp
 {
 private:
 	GLFWwindow* window;
+
+	std::vector<RenderableObject*> _renderableObjList;
+	Camera* _usingCamera;
+	std::vector<IUpdatable*> _updatableObjList;
 
 	GLuint _vertexArrayID;
 	GLuint _programID;
@@ -49,11 +54,13 @@ public:
 	
 	bool IsWindowClose();
 
-	void BindCamera(Camera* camera);
+	void AddObject(RenderableObject* obj);
+	void AddCamera(Camera* camera);
 
-	void ClearScreen();
-	void Draw(RenderableObject* obj);
-	void EndDraw();
+	void AddUpdatableObj(IUpdatable* obj);
+
+	void Update();
+	void Draw();
 
 	virtual void ReleaseMemory() override;
 };

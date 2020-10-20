@@ -25,6 +25,11 @@ void Object::SetObjectLocation(float x, float y, float z)
 {
 	_worldPosition = glm::vec3(x, y, z);
 }
+void Object::SetObjectLocation(glm::vec3 world_pos)
+{
+	_worldPosition = world_pos;
+}
+
 glm::vec3 Object::GetObjectLocation() const
 {
 	return _worldPosition;

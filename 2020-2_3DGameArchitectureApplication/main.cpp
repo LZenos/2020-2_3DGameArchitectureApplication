@@ -38,21 +38,29 @@ int main(void)
 	sphere_2->SetObjectLocation(-1.5f, 3.0f, -4.0f);
 
 
+	// 렌더링 할 객체 추가
+	Renderer::GetInstance().AddObject(cube_1);
+	Renderer::GetInstance().AddObject(cube_2);
+	Renderer::GetInstance().AddObject(sphere_1);
+	Renderer::GetInstance().AddObject(sphere_2);
+	
 	// 카메라 설정
-	Renderer::GetInstance().BindCamera(main_camera);
+	Renderer::GetInstance().AddCamera(main_camera);
+
+	// 업데이트 할 객체 추가 (임시 구현. 렌더러에서 할 일은 아닌 것 같다...)
+	Renderer::GetInstance().AddUpdatableObj(main_camera);
+	Renderer::GetInstance().AddUpdatableObj(cube_1);
+	Renderer::GetInstance().AddUpdatableObj(cube_2);
+	Renderer::GetInstance().AddUpdatableObj(sphere_1);
+	Renderer::GetInstance().AddUpdatableObj(sphere_2);
 
 	
 	// 그리기
 	do
 	{
-		Renderer::GetInstance().ClearScreen();
-
-		Renderer::GetInstance().Draw(cube_1);
-		Renderer::GetInstance().Draw(cube_2);
-		Renderer::GetInstance().Draw(sphere_1);
-		Renderer::GetInstance().Draw(sphere_2);
-
-		Renderer::GetInstance().EndDraw();
+		Renderer::GetInstance().Draw();
+		
+		Renderer::GetInstance().Update();
 	}
 	while (Renderer::GetInstance().IsWindowClose());
 
