@@ -35,9 +35,13 @@ private:
 
 	glm::vec3 _lightPos;
 
-public:
+
 	Renderer();
+
+public:
 	~Renderer();
+
+	static Renderer& GetInstance();
 	
 	bool InitWindowSettings(const char* title, int width = 1024, int height = 768);
 	void InitRenderSettings(const char* vs_path, const char* fs_path);

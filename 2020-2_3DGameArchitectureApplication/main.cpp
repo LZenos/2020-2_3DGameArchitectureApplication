@@ -12,11 +12,11 @@ int main(void)
 
 
 	// 렌더러 객체 생성 및 초기화
-	Renderer* renderer = new Renderer();
+	Renderer::GetInstance();
 
-	renderer->InitWindowSettings("Graphic Engine");
-	renderer->InitRenderSettings("vs.shader", "fs.shader");
-	renderer->InitLightPosition(0.0f, 3.0f, 1.5f);
+	Renderer::GetInstance().InitWindowSettings("Graphic Engine");
+	Renderer::GetInstance().InitRenderSettings("vs.shader", "fs.shader");
+	Renderer::GetInstance().InitLightPosition(0.0f, 3.0f, 1.5f);
 
 	
 	// 오브젝트 객체 생성 및 설정
@@ -39,22 +39,22 @@ int main(void)
 
 
 	// 카메라 설정
-	renderer->BindCamera(main_camera);
+	Renderer::GetInstance().BindCamera(main_camera);
 
 	
 	// 그리기
 	do
 	{
-		renderer->ClearScreen();
+		Renderer::GetInstance().ClearScreen();
 
-		renderer->Draw(cube_1);
-		renderer->Draw(cube_2);
-		renderer->Draw(sphere_1);
-		renderer->Draw(sphere_2);
+		Renderer::GetInstance().Draw(cube_1);
+		Renderer::GetInstance().Draw(cube_2);
+		Renderer::GetInstance().Draw(sphere_1);
+		Renderer::GetInstance().Draw(sphere_2);
 
-		renderer->EndDraw();
+		Renderer::GetInstance().EndDraw();
 	}
-	while (renderer->IsWindowClose());
+	while (Renderer::GetInstance().IsWindowClose());
 
 
 	// 메모리 해제
@@ -63,7 +63,7 @@ int main(void)
 	cube_2->ReleaseMemory();
 	sphere_1->ReleaseMemory();
 	sphere_2->ReleaseMemory();
-	renderer->ReleaseMemory();
+	Renderer::GetInstance().ReleaseMemory();
 	
 	return 0;
 }

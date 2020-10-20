@@ -20,9 +20,9 @@
 
 FileManager& FileManager::GetInstance()
 {
-	static FileManager* _instance;
+	static FileManager _instance;
 	
-	return *_instance;
+	return _instance;
 }
 
 bool FileManager::LoadObj(

@@ -26,6 +26,14 @@ Renderer::~Renderer()
 }
 
 
+Renderer& Renderer::GetInstance()
+{
+	static Renderer _instance;
+
+	return _instance;
+}
+
+
 bool Renderer::InitWindowSettings(const char* title, int width, int height)
 {
 	if (!glfwInit())
@@ -189,6 +197,4 @@ void Renderer::ReleaseMemory()
 	glDeleteVertexArrays(1, &_vertexArrayID);
 
 	glfwTerminate();
-
-	delete this;
 }
