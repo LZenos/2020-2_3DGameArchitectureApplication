@@ -17,7 +17,7 @@ NonRenderableObject::~NonRenderableObject()
 
 void NonRenderableObject::Update()
 {
-	printf("%s (%.2f, %.2f, %.2f) (Invisible)\n", GetName().c_str(), GetObjectLocation().x, GetObjectLocation().y, GetObjectLocation().z);
+	
 }
 
 

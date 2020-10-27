@@ -3,6 +3,11 @@
 #include "FileManager.h"
 
 
+Mesh::Mesh(std::string object_name) : RenderableObject(object_name)
+{
+	
+}
+
 bool Mesh::Initialize(const char* obj_file_path, const char* dds_file_path, bool advanced_parser)
 {
 	// obj 파일 로드
@@ -15,7 +20,6 @@ bool Mesh::Initialize(const char* obj_file_path, const char* dds_file_path, bool
 	{
 		res = FileManager::GetInstance().LoadObj(obj_file_path, _vertexes, _uvs, _normals);
 	}
-
 	if (!res)
 	{
 		printf("Loading obj file has failed. Upgrade parser or change your model less complicated.\n");

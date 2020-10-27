@@ -3,11 +3,18 @@
 #include "FileManager.h"
 
 
-bool Sphere::Initialize(const char* dds_file_path)
+bool Sphere::Initialize(const char* obj_file_path, const char* dds_file_path)
 {
 	// obj 파일 로드
-	bool res = FileManager::GetInstance().LoadObjAdvanced("sphere.obj", _vertexes, _uvs, _normals);
-
+	bool res = false;
+	if (obj_file_path == "Default")
+	{
+		res = FileManager::GetInstance().LoadObjAdvanced("Models/sphere.obj", _vertexes, _uvs, _normals);
+	}
+	else
+	{
+		res = FileManager::GetInstance().LoadObjAdvanced(obj_file_path, _vertexes, _uvs, _normals);
+	}
 	if (!res)
 	{
 		printf("Loading obj file has failed. Upgrade parser or change your model less complicated.\n");
@@ -18,7 +25,7 @@ bool Sphere::Initialize(const char* dds_file_path)
 	// dds 파일 로드
 	if (dds_file_path == "Default")
 	{
-		_texture = FileManager::GetInstance().LoadDDS("earth.dds");
+		_texture = FileManager::GetInstance().LoadDDS("Textures/earth.dds");
 	}
 	else
 	{
@@ -38,4 +45,17 @@ bool Sphere::Initialize(const char* dds_file_path)
 	glGenBuffers(1, &_normalBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, _normalBuffer);
 	glBufferData(GL_ARRAY_BUFFER, _normals.size() * sizeof(glm::vec3), &_normals[0], GL_STATIC_DRAW);
+
+
+	_degree = 0.0f;
+	SetObjectRotation(0.0f, 1.0f, 0.0f, 0.0f);
+}
+
+void Sphere::Update()
+{
+	RenderableObject::Update();
+	
+	_degree += 0.1f;
+
+	SetObjectRotation(_degree, 1.0f, 0.0f, 0.0f);
 }

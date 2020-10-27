@@ -8,9 +8,7 @@ Camera::Camera(std::string object_name) : NonRenderableObject(object_name)
 	_fovDegree = 45.0f;
 	_aspect = (4.0f / 3.0f);
 	_near = 0.1f;
-	_far = 100.0f;
-
-	_interval = -0.01f;
+	_far = 200.0f;
 }
 
 void Camera::Initialize(glm::vec3 camera_pos, glm::vec3 aim_pos, glm::vec3 up_vector,
@@ -23,22 +21,6 @@ void Camera::Initialize(glm::vec3 camera_pos, glm::vec3 aim_pos, glm::vec3 up_ve
 	_aspect = aspect;
 	_near = near;
 	_far = far;
-}
-
-void Camera::Update()
-{
-	NonRenderableObject::Update();
-	
-	if (GetObjectLocation().x > 10.0f)
-	{
-		_interval = -0.01f;
-	}
-	else if (GetObjectLocation().x < -10.0f)
-	{
-		_interval = 0.01f;
-	}
-
-	SetObjectLocation(GetObjectLocation().x + _interval, GetObjectLocation().y, GetObjectLocation().z);
 }
 
 glm::vec3 Camera::GetAimPos() const

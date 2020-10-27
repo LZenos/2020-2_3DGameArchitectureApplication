@@ -137,6 +137,8 @@ bool FileManager::LoadObjAdvanced(
 	std::vector<glm::vec2> temp_uv;
 	std::vector<glm::vec3> temp_normal;
 
+	printf("Loading OBJ file: %s...\n", path);
+
 	std::ifstream fileStream(path, std::ios::in);
 
 	if (fileStream.is_open())
@@ -293,6 +295,9 @@ bool FileManager::LoadObjAdvanced(
 		out_uvs.push_back(temp_uv[i_uv[i] - 1]);
 		out_normals.push_back(temp_normal[i_normal[i] - 1]);
 	}
+
+
+	printf("%s file loading has completed.\n", path);
 
 	return true;
 }

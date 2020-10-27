@@ -18,3 +18,7 @@ bld/
 
 # User-specific files
 *.user
+
+# Resources (구글 드라이브 별도 업로드)
+Models/
+Textures/

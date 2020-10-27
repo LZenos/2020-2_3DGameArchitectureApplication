@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="FileManager.cpp" />
+    <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Object_Camera.cpp" />
@@ -147,6 +148,7 @@
     <ClCompile Include="Object_NonRenderable.cpp" />
     <ClCompile Include="Object_Renderable.cpp" />
     <ClCompile Include="Object_Sphere.cpp" />
+    <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -402,13 +404,16 @@
     <ClInclude Include="include\GL\glew.h" />
     <ClInclude Include="include\GL\glxew.h" />
     <ClInclude Include="include\GL\wglew.h" />
+    <ClInclude Include="InputManager.h" />
     <ClInclude Include="IUpdatable.h" />
+    <ClInclude Include="Object_Light.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Object_Camera.h" />
     <ClInclude Include="Object_Mesh.h" />
     <ClInclude Include="Object_NonRenderable.h" />
     <ClInclude Include="Object_Renderable.h" />
     <ClInclude Include="Object_Sphere.h" />
+    <ClInclude Include="PlayerController.h" />
     <ClInclude Include="Renderer.h" />
   </ItemGroup>
   <ItemGroup>

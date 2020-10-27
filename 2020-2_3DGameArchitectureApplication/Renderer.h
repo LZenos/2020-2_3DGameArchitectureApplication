@@ -14,6 +14,7 @@
 class FileManager;
 class RenderableObject;
 class Camera;
+class Light;
 
 
 class Renderer : public ICleanUp
@@ -23,6 +24,7 @@ private:
 
 	std::vector<RenderableObject*> _renderableObjList;
 	Camera* _usingCamera;
+	std::vector<Light*> _lightList;
 	std::vector<IUpdatable*> _updatableObjList;
 
 	GLuint _vertexArrayID;
@@ -38,8 +40,6 @@ private:
 	glm::mat4 _modelMatrix;
 	glm::mat4 _MVP;
 
-	glm::vec3 _lightPos;
-
 
 	Renderer();
 
@@ -50,12 +50,13 @@ public:
 	
 	bool InitWindowSettings(const char* title, int width = 1024, int height = 768);
 	void InitRenderSettings(const char* vs_path, const char* fs_path);
-	void InitLightPosition(float x, float y, float z);
 	
+	GLFWwindow* GetWindow() const;
 	bool IsWindowClose();
 
 	void AddObject(RenderableObject* obj);
 	void AddCamera(Camera* camera);
+	void AddLight(Light* light);
 
 	void AddUpdatableObj(IUpdatable* obj);
 

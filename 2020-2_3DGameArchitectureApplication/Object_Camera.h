@@ -16,15 +16,11 @@ private:
 	float _near;
 	float _far;
 
-	float _interval;
-
 public:
 	Camera(std::string object_name = "Camera");
 	
 	void Initialize(glm::vec3 camera_pos, glm::vec3 aim_pos, glm::vec3 up_vector,
-					float fov_degree, float aspect, float near, float far);
-
-	virtual void Update() override;
+					float fov_degree = 45.0f, float aspect = (4.0f / 3.0f), float near = 0.1f, float far = 200.0f);
 
 	glm::vec3 GetAimPos() const;
 	glm::vec3 GetUpVector() const;
