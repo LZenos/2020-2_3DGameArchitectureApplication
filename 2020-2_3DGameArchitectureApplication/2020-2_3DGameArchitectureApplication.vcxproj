@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="FileManager.cpp" />
+    <ClCompile Include="GameLogic.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object.cpp" />
@@ -150,9 +151,11 @@
     <ClCompile Include="Object_Sphere.cpp" />
     <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Time.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileManager.h" />
+    <ClInclude Include="GameLogic.h" />
     <ClInclude Include="glm\common.hpp" />
     <ClInclude Include="glm\detail\compute_common.hpp" />
     <ClInclude Include="glm\detail\compute_vector_relational.hpp" />
@@ -415,6 +418,7 @@
     <ClInclude Include="Object_Sphere.h" />
     <ClInclude Include="PlayerController.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Time.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="glm\detail\func_common.inl" />

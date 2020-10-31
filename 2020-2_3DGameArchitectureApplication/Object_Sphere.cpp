@@ -55,7 +55,7 @@ void Sphere::Update()
 {
 	RenderableObject::Update();
 	
-	_degree += 0.1f;
+	_degree += 0.5f;
 
 	SetObjectRotation(_degree, 1.0f, 0.0f, 0.0f);
 }

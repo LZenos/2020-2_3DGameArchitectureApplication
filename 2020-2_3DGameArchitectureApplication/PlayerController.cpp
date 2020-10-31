@@ -11,9 +11,6 @@ PlayerController::PlayerController(Object* playerable_character)
 	_characterObject = playerable_character;
 
 	_moveSpeed = 2.0f;
-
-
-	InputManager::GetInstance();
 }
 
 PlayerController::~PlayerController()

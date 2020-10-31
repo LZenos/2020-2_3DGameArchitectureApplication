@@ -1,6 +1,8 @@
 #include "Renderer.h"
 
 #include "FileManager.h"
+#include "Time.h"
+#include "InputManager.h"
 #include "Object_Renderable.h"
 #include "Object_Camera.h"
 #include "Object_Light.h"
@@ -16,8 +18,10 @@
 
 Renderer::Renderer()
 {
+	_frameLimit = 0;
+	_curSec = 0.0f;
+	
 	_renderableObjList.clear();
-	_updatableObjList.clear();
 }
 
 Renderer::~Renderer()
@@ -74,6 +78,8 @@ bool Renderer::InitWindowSettings(const char* title, int width, int height)
 	glfwSetCursorPos(window, width / 2, height / 2);
 
 	glClearColor(0.005f, 0.0f, 0.02f, 0.0f);
+
+	InputManager::GetInstance().InitiWindow(window);
 }
 
 void Renderer::InitRenderSettings(const char* vs_path, const char* fs_path)
@@ -99,9 +105,9 @@ void Renderer::InitRenderSettings(const char* vs_path, const char* fs_path)
 }
 
 
-GLFWwindow* Renderer::GetWindow() const
+void Renderer::SetLimitFrame(int max_frame)
 {
-	return window;
+	_frameLimit = max_frame;
 }
 
 bool Renderer::IsWindowClose()
@@ -130,22 +136,23 @@ void Renderer::AddLight(Light* light)
 	_lightList.push_back(light);
 }
 
-void Renderer::AddUpdatableObj(IUpdatable* obj)
-{
-	_updatableObjList.push_back(obj);
-}
-
-
-void Renderer::Update()
-{
-	for (int i = 0; i < _updatableObjList.size(); i++)
-	{
-		_updatableObjList[i]->Update();
-	}
-}
 
 void Renderer::Draw()
 {
+	if (_frameLimit > 0)
+	{
+		if (_curSec < (1.0f / (float)_frameLimit))
+		{
+			_curSec += Time::GetInstance().GetDeltaTime();
+
+			return;
+		}
+		else
+		{
+			_curSec = 0.0f;
+		}
+	}
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	
@@ -255,7 +262,6 @@ void Renderer::ReleaseMemory()
 	glDeleteVertexArrays(1, &_vertexArrayID);
 
 	_renderableObjList.clear();
-	_updatableObjList.clear();
 
 	glfwTerminate();
 }

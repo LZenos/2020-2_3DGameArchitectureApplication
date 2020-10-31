@@ -20,12 +20,14 @@ class Light;
 class Renderer : public ICleanUp
 {
 private:
+	int _frameLimit;
+	float _curSec;
+	
 	GLFWwindow* window;
 
 	std::vector<RenderableObject*> _renderableObjList;
 	Camera* _usingCamera;
 	std::vector<Light*> _lightList;
-	std::vector<IUpdatable*> _updatableObjList;
 
 	GLuint _vertexArrayID;
 	GLuint _programID;
@@ -51,16 +53,14 @@ public:
 	bool InitWindowSettings(const char* title, int width = 1024, int height = 768);
 	void InitRenderSettings(const char* vs_path, const char* fs_path);
 	
-	GLFWwindow* GetWindow() const;
+	void SetLimitFrame(int max_frame);
+	
 	bool IsWindowClose();
 
 	void AddObject(RenderableObject* obj);
 	void AddCamera(Camera* camera);
 	void AddLight(Light* light);
 
-	void AddUpdatableObj(IUpdatable* obj);
-
-	void Update();
 	void Draw();
 
 	virtual void ReleaseMemory() override;

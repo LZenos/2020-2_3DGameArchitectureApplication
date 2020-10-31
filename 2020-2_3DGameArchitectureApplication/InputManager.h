@@ -26,6 +26,8 @@ public:
 
 	static InputManager& GetInstance();
 
+	void InitiWindow(GLFWwindow* window);
+
 	Movement GetKey() const;
 	Movement GetKeyDown();
 	Movement GetKeyUp();

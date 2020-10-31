@@ -1,12 +1,8 @@
 #include "InputManager.h"
 
-#include "Renderer.h"
-
 
 InputManager::InputManager()
 {
-	_window = Renderer::GetInstance().GetWindow();
-
 	_leftKeyDown = false;
 	_rightKeyDown = false;
 }
@@ -22,6 +18,12 @@ InputManager& InputManager::GetInstance()
 	static InputManager instance;
 
 	return instance;
+}
+
+
+void InputManager::InitiWindow(GLFWwindow* window)
+{
+	_window = window;
 }
 
 

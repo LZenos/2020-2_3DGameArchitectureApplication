@@ -1,5 +1,7 @@
 #include "FileManager.h"
+#include "Time.h"
 #include "Renderer.h"
+#include "GameLogic.h"
 #include "PlayerController.h"
 #include "Object_Camera.h"
 #include "Object_Light.h"
@@ -11,12 +13,15 @@
 
 int main(void)
 {
+	// 상수
+	const int tree_num = 48;
+	const int buiding_num = 24;
+	
+	
 	// 파일 매니저 객체 생성
 	FileManager::GetInstance();
 
 	// 렌더러 객체 생성 및 초기화
-	Renderer::GetInstance();
-
 	Renderer::GetInstance().InitWindowSettings("Graphic Engine");
 	Renderer::GetInstance().InitRenderSettings("vs.shader", "fs.shader");
 
@@ -27,12 +32,12 @@ int main(void)
 	Sphere* ground = new Sphere("Ground");
 	Mesh* car = new Mesh("Car");
 	std::vector<Mesh*> trees;
-	for (int i = 0; i < 48; i++)
+	for (int i = 0; i < tree_num; i++)
 	{
 		trees.push_back(new Mesh("Tree"));
 	}
 	std::vector<Mesh*> buildings;
-	for (int i = 0; i < 24; i++)
+	for (int i = 0; i < buiding_num; i++)
 	{
 		buildings.push_back(new Mesh("Building"));
 	}
@@ -44,7 +49,7 @@ int main(void)
 	main_camera->Initialize(glm::vec3(0.0f, 115.0f, 21.0f), glm::vec3(0.0f, 100.0f, -5.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	ground->Initialize("Models/huge sphere.obj", "Textures/moon.dds");
 	car->Initialize("Models/car.obj", "Textures/car.dds", true);
-	for (int i = 0; i < 48; i++)
+	for (int i = 0; i < tree_num; i++)
 	{
 		trees[i]->Initialize("Models/tree.obj", "Textures/tree.dds", true);
 
@@ -110,7 +115,7 @@ int main(void)
 
 		Renderer::GetInstance().AddObject(trees[i]);
 	}
-	for (int i = 0; i < 24; i++)
+	for (int i = 0; i < buiding_num; i++)
 	{
 		buildings[i]->Initialize("Models/building.obj", "Textures/building.dds", true);
 
@@ -177,17 +182,19 @@ int main(void)
 	// 빛 추가
 	Renderer::GetInstance().AddLight(point_light);
 
-	// 업데이트 할 객체 추가 (임시 구현. 렌더러에서 할 일은 아닌 것 같다...)
-	Renderer::GetInstance().AddUpdatableObj(ground);
+	// 업데이트 할 객체 추가
+	GameLogic::GetInstance().AddUpdatableObj(ground);
 
 	
-	// 그리기
+	// 루프
 	do
 	{
+		Time::GetInstance().Tick();
+		
 		player->Move();
 		
 		Renderer::GetInstance().Draw();
-		Renderer::GetInstance().Update();
+		GameLogic::GetInstance().Update();
 	}
 	while (Renderer::GetInstance().IsWindowClose());
 
@@ -206,6 +213,7 @@ int main(void)
 		buildings[i]->ReleaseMemory();
 	}
 	Renderer::GetInstance().ReleaseMemory();
+	GameLogic::GetInstance().ReleaseMemory();
 	
 	return 0;
 }
