@@ -1,6 +1,7 @@
 #include "PlayerController.h"
 
 #include "InputManager.h"
+#include "GameLogic.h"
 #include "Object.h"
 
 #include "glm/glm.hpp"
@@ -11,6 +12,8 @@ PlayerController::PlayerController(Object* playerable_character)
 	_characterObject = playerable_character;
 
 	_moveSpeed = 2.0f;
+
+	GameLogic::GetInstance().AddUpdatableObj(this);
 }
 
 PlayerController::~PlayerController()
@@ -49,4 +52,20 @@ void PlayerController::Move()
 		}
 		break;
 	}
+}
+
+void PlayerController::Init()
+{
+
+}
+
+void PlayerController::Update()
+{
+	Move();
+}
+
+
+void PlayerController::ReleaseMemory()
+{
+	delete this;
 }

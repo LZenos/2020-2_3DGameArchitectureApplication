@@ -16,13 +16,13 @@ public:
 
 	static FileManager& GetInstance();
 	
-	bool LoadObj(
+	bool LoadObjSimple(
 		const char* path,
 		std::vector<glm::vec3>& out_vertexes,
 		std::vector<glm::vec2>& out_uvs,
 		std::vector<glm::vec3>& out_normals);
 
-	bool LoadObjAdvanced(
+	void LoadObj(
 		const char* path,
 		std::vector<glm::vec3>& out_vertexes,
 		std::vector<glm::vec2>& out_uvs,

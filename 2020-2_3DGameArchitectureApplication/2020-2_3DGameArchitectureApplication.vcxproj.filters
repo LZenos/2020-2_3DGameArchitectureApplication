@@ -27,16 +27,10 @@
     <ClCompile Include="Object_Camera.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Object_Mesh.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Object_NonRenderable.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Object_Renderable.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Object_Sphere.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Renderer.cpp">
@@ -54,12 +48,12 @@
     <ClCompile Include="Time.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="SpinningSphere.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="ICleanup.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Object.h">
@@ -849,6 +843,12 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Time.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ICleanUp.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="SpinningSphere.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

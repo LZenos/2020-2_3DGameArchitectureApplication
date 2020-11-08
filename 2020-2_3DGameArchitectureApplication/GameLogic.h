@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ICleanup.h"
+#include "ICleanUp.h"
 #include "IUpdatable.h"
 
 #include <vector>
@@ -25,7 +25,11 @@ public:
 
 	void AddUpdatableObj(IUpdatable* obj);
 
+
+	void Init();
+
 	void Update();
+
 
 	virtual void ReleaseMemory() override;
 };

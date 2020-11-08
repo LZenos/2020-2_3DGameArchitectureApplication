@@ -1,6 +1,5 @@
 #include "Renderer.h"
 
-#include "FileManager.h"
 #include "Time.h"
 #include "InputManager.h"
 #include "Object_Renderable.h"
@@ -20,8 +19,16 @@ Renderer::Renderer()
 {
 	_frameLimit = 0;
 	_curSec = 0.0f;
+
+	_window = nullptr;
 	
 	_renderableObjList.clear();
+	_usingCamera = nullptr;
+	_lightList.clear();
+
+	_projectionMatrix = glm::mat4(1.0f);
+	_viewMatrix = glm::mat4(1.0f);
+	_modelMatrix = glm::mat4(1.0f);
 }
 
 Renderer::~Renderer()
@@ -53,15 +60,15 @@ bool Renderer::InitWindowSettings(const char* title, int width, int height)
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	window = glfwCreateWindow(width, height, title, NULL, NULL);
-	if (window == NULL)
+	_window = glfwCreateWindow(width, height, title, NULL, NULL);
+	if (_window == NULL)
 	{
 		fprintf(stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n");
 		getchar();
 		glfwTerminate();
 		return false;
 	}
-	glfwMakeContextCurrent(window);
+	glfwMakeContextCurrent(_window);
 
 	glewExperimental = true;
 	if (glewInit() != GLEW_OK)
@@ -72,36 +79,23 @@ bool Renderer::InitWindowSettings(const char* title, int width, int height)
 		return false;
 	}
 
-	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+	glfwSetInputMode(_window, GLFW_STICKY_KEYS, GL_TRUE);
 
 	glfwPollEvents();
-	glfwSetCursorPos(window, width / 2, height / 2);
+	glfwSetCursorPos(_window, width / 2, height / 2);
 
 	glClearColor(0.005f, 0.0f, 0.02f, 0.0f);
 
-	InputManager::GetInstance().InitiWindow(window);
+	InputManager::GetInstance().InitiWindow(_window);
 }
 
-void Renderer::InitRenderSettings(const char* vs_path, const char* fs_path)
+void Renderer::InitRenderSettings()
 {
 	glEnable(GL_DEPTH_TEST);
 
 	glDepthFunc(GL_LESS);
 
 	glEnable(GL_CULL_FACE);
-
-	glGenVertexArrays(1, &_vertexArrayID);
-	glBindVertexArray(_vertexArrayID);
-
-	_programID = FileManager::GetInstance().LoadShader(vs_path, fs_path);
-
-	_matrixID = glGetUniformLocation(_programID, "MVP");
-	_viewMatrixID = glGetUniformLocation(_programID, "V");
-	_modelMatrixID = glGetUniformLocation(_programID, "M");
-
-	_textureID = glGetUniformLocation(_programID, "myTextureSampler");
-
-	_lightID = glGetUniformLocation(_programID, "LightPosition_worldspace");
 }
 
 
@@ -112,8 +106,8 @@ void Renderer::SetLimitFrame(int max_frame)
 
 bool Renderer::IsWindowClose()
 {
-	return (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && 
-			glfwWindowShouldClose(window) == 0);
+	return (glfwGetKey(_window, GLFW_KEY_ESCAPE) != GLFW_PRESS && 
+			glfwWindowShouldClose(_window) == 0);
 }
 
 
@@ -137,7 +131,7 @@ void Renderer::AddLight(Light* light)
 }
 
 
-void Renderer::Draw()
+void Renderer::Render()
 {
 	if (_frameLimit > 0)
 	{
@@ -156,112 +150,38 @@ void Renderer::Draw()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	
-	glUseProgram(_programID);
-
 	_projectionMatrix = glm::perspective(glm::radians(_usingCamera->GetFOV()), _usingCamera->GetAspect(), _usingCamera->GetNear(), _usingCamera->GetFar());
 	_viewMatrix = glm::lookAt(_usingCamera->GetObjectLocation(), _usingCamera->GetAimPos(), _usingCamera->GetUpVector());
 	_modelMatrix = glm::mat4(1.0f);
 
 	for (int i = 0; i < _renderableObjList.size(); i++)
 	{
-		glm::mat4 model_translate = glm::translate(glm::mat4(1.0f), _renderableObjList[i]->GetObjectLocation());
-		glm::mat4 model_rotate = glm::rotate(glm::mat4(1.0f), glm::radians(_renderableObjList[i]->GetObjectRotationDegree()), _renderableObjList[i]->GetObjectRotationAxis());
-		glm::mat4 reverse_rotate = glm::rotate(glm::mat4(1.0f), glm::radians(_renderableObjList[i]->GetObjectRotationDegree() * -1.0f), _renderableObjList[i]->GetObjectRotationAxis());
-		glm::mat4 model_scale = glm::scale(glm::mat4(1.0f), _renderableObjList[i]->GetObjectScale());
-		glm::mat4 model_parentRot = glm::mat4(1.0f);
-		glm::mat4 model_parentPos = glm::mat4(1.0f);
-
-		if (_renderableObjList[i]->GetParent() != nullptr)
-		{
-			reverse_rotate = glm::mat4(1.0f);
-			model_parentRot = glm::rotate(glm::mat4(1.0f), glm::radians(_renderableObjList[i]->GetParent()->GetObjectRotationDegree()), _renderableObjList[i]->GetParent()->GetObjectRotationAxis());
-			model_parentPos = glm::translate(glm::mat4(1.0f), _renderableObjList[i]->GetParent()->GetObjectLocation());
-		}
-
-		_MVP = _projectionMatrix * _viewMatrix * model_parentPos * model_parentRot * model_translate * model_rotate * model_scale * _modelMatrix;
-
-		glUniformMatrix4fv(_matrixID, 1, GL_FALSE, &_MVP[0][0]);
-		glUniformMatrix4fv(_modelMatrixID, 1, GL_FALSE, &_modelMatrix[0][0]);
-		glUniformMatrix4fv(_viewMatrixID, 1, GL_FALSE, &_viewMatrix[0][0]);
+		_renderableObjList[i]->SetMVP(_modelMatrix, _viewMatrix, _projectionMatrix);
 
 
 		for (int n = 0; n < _lightList.size(); n++)
 		{
 			glm::vec3 light_worldPos = _lightList[n]->GetObjectLocation();
-			if (_lightList[n]->GetParent() != nullptr)
+			if (_lightList[n]->IsChild())
 			{
 				light_worldPos += _lightList[n]->GetParent()->GetObjectLocation();
 			}
 
-			glm::vec4 temp = model_parentPos * model_parentRot * glm::vec4(_renderableObjList[i]->GetObjectLocation(), 0.0f);
-			glm::vec3 loc = glm::vec3(temp.x, temp.y, temp.z);
-			glm::vec3 l_pos = glm::vec3(
-				light_worldPos.x - (glm::abs(loc.x) - (_renderableObjList[i]->GetObjectScale().x)) * ((loc.x > 0) - (loc.x < 0)),
-				light_worldPos.y - (glm::abs(loc.y) - (_renderableObjList[i]->GetObjectScale().y)) * ((loc.y > 0) - (loc.y < 0)),
-				light_worldPos.z - (glm::abs(loc.z) - (_renderableObjList[i]->GetObjectScale().z)) * ((loc.z > 0) - (loc.z < 0)));
-			glm::vec4 f_pos = reverse_rotate * glm::vec4(l_pos, 0.0f);
-			glUniform3f(_lightID, f_pos.x, f_pos.y, f_pos.z);
+			_renderableObjList[i]->UniformShaderRelativeLightPos(light_worldPos);
 		}
 
-
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, _renderableObjList[i]->GetTexture());
-		glUniform1i(_textureID, 0);
-
-
-		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, _renderableObjList[i]->GetVertexBuffer());
-		glVertexAttribPointer(
-			0,
-			3,
-			GL_FLOAT,
-			GL_FALSE,
-			0,
-			(void*)0
-		);
-
-		glEnableVertexAttribArray(1);
-		glBindBuffer(GL_ARRAY_BUFFER, _renderableObjList[i]->GetUVBuffer());
-		glVertexAttribPointer(
-			1,
-			2,
-			GL_FLOAT,
-			GL_FALSE,
-			0,
-			(void*)0
-		);
-
-		glEnableVertexAttribArray(2);
-		glBindBuffer(GL_ARRAY_BUFFER, _renderableObjList[i]->GetNormalBuffer());
-		glVertexAttribPointer(
-			2,
-			3,
-			GL_FLOAT,
-			GL_FALSE,
-			0,
-			(void*)0
-		);
-
-
-		glDrawArrays(GL_TRIANGLES, 0, _renderableObjList[i]->GetVertexSize());
-
-
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
-		glDisableVertexAttribArray(2);
+		_renderableObjList[i]->Render();
 	}
 
 
-	glfwSwapBuffers(window);
+	glfwSwapBuffers(_window);
 	glfwPollEvents();
 }
 
 void Renderer::ReleaseMemory()
 {
-	glDeleteProgram(_programID);
-	glDeleteVertexArrays(1, &_vertexArrayID);
-
 	_renderableObjList.clear();
+	_lightList.clear();
 
 	glfwTerminate();
 }

@@ -33,6 +33,15 @@ void GameLogic::AddUpdatableObj(IUpdatable* obj)
 	_updatableObjList.push_back(obj);
 }
 
+
+void GameLogic::Init()
+{
+	for (int i = 0; i < _updatableObjList.size(); i++)
+	{
+		_updatableObjList[i]->Init();
+	}
+}
+
 void GameLogic::Update()
 {
 	if (_curSec < (1.0f / (float)_framePerSec))
@@ -49,6 +58,7 @@ void GameLogic::Update()
 		}
 	}
 }
+
 
 void GameLogic::ReleaseMemory()
 {

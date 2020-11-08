@@ -25,7 +25,7 @@ FileManager& FileManager::GetInstance()
 	return _instance;
 }
 
-bool FileManager::LoadObj(
+bool FileManager::LoadObjSimple(
 	const char* path,
 	std::vector<glm::vec3>& out_vertexes,
 	std::vector<glm::vec2>& out_uvs,
@@ -124,7 +124,7 @@ bool FileManager::LoadObj(
 	return true;
 }
 
-bool FileManager::LoadObjAdvanced(
+void FileManager::LoadObj(
 	const char* path,
 	std::vector<glm::vec3>& out_vertexes,
 	std::vector<glm::vec2>& out_uvs,
@@ -298,8 +298,6 @@ bool FileManager::LoadObjAdvanced(
 
 
 	printf("%s file loading has completed.\n", path);
-
-	return true;
 }
 
 GLuint FileManager::LoadDDS(const char* path)

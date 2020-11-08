@@ -1,4 +1,3 @@
-#include "FileManager.h"
 #include "Time.h"
 #include "Renderer.h"
 #include "GameLogic.h"
@@ -6,7 +5,7 @@
 #include "Object_Camera.h"
 #include "Object_Light.h"
 #include "Object_Mesh.h"
-#include "Object_Sphere.h"
+#include "SpinningSphere.h"
 
 #include <vector>
 
@@ -14,22 +13,19 @@
 int main(void)
 {
 	// 상수
-	const int tree_num = 48;
-	const int buiding_num = 24;
+	const int tree_num = 1;
+	const int buiding_num = 6;
 	
 	
-	// 파일 매니저 객체 생성
-	FileManager::GetInstance();
-
-	// 렌더러 객체 생성 및 초기화
+	// 렌더러 객체 초기화
 	Renderer::GetInstance().InitWindowSettings("Graphic Engine");
-	Renderer::GetInstance().InitRenderSettings("vs.shader", "fs.shader");
+	Renderer::GetInstance().InitRenderSettings();
 
 	
 	// 오브젝트 객체 생성
 	Camera* main_camera = new Camera();
 	Light* point_light = new Light();
-	Sphere* ground = new Sphere("Ground");
+	SpinningSphere* ground = new SpinningSphere("Ground");
 	Mesh* car = new Mesh("Car");
 	std::vector<Mesh*> trees;
 	for (int i = 0; i < tree_num; i++)
@@ -48,10 +44,10 @@ int main(void)
 	// 오브젝트 설정
 	main_camera->Initialize(glm::vec3(0.0f, 115.0f, 21.0f), glm::vec3(0.0f, 100.0f, -5.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	ground->Initialize("Models/huge sphere.obj", "Textures/moon.dds");
-	car->Initialize("Models/car.obj", "Textures/car.dds", true);
+	car->Initialize("Models/car.obj", "Textures/car.dds");
 	for (int i = 0; i < tree_num; i++)
 	{
-		trees[i]->Initialize("Models/tree.obj", "Textures/tree.dds", true);
+		trees[i]->Initialize("Models/tree.obj", "Textures/tree.dds");
 
 		glm::vec2 pos;
 		switch (i % 12)
@@ -112,12 +108,10 @@ int main(void)
 		trees[i]->SetObjectRotation(15.0f * i, 1.0f, 0.0f, 0.0f);
 
 		trees[i]->AttachTo(ground);
-
-		Renderer::GetInstance().AddObject(trees[i]);
 	}
 	for (int i = 0; i < buiding_num; i++)
 	{
-		buildings[i]->Initialize("Models/building.obj", "Textures/building.dds", true);
+		buildings[i]->Initialize("Models/building.obj", "Textures/building.dds");
 
 		glm::vec2 pos;
 		switch (i % 6)
@@ -161,39 +155,30 @@ int main(void)
 		buildings[i]->SetObjectScale(0.5f, 0.5f, 0.5f);
 
 		buildings[i]->AttachTo(ground);
-
-		Renderer::GetInstance().AddObject(buildings[i]);
 	}
 	
 	point_light->SetObjectLocation(0.0f, 100.3f, -4.0f);
-	ground->SetObjectLocation(0.0f, 0.0f, 0.0f);
 	car->SetObjectLocation(0.0f, 100.3f, 0.0f);
 
 	point_light->AttachTo(car);
 
 
-	// 렌더링 할 객체 추가
-	Renderer::GetInstance().AddObject(ground);
-	Renderer::GetInstance().AddObject(car);
-	
 	// 카메라 설정
 	Renderer::GetInstance().AddCamera(main_camera);
 
 	// 빛 추가
 	Renderer::GetInstance().AddLight(point_light);
 
-	// 업데이트 할 객체 추가
-	GameLogic::GetInstance().AddUpdatableObj(ground);
-
+	
+	// Init 호출
+	GameLogic::GetInstance().Init();
 	
 	// 루프
 	do
 	{
 		Time::GetInstance().Tick();
 		
-		player->Move();
-		
-		Renderer::GetInstance().Draw();
+		Renderer::GetInstance().Render();
 		GameLogic::GetInstance().Update();
 	}
 	while (Renderer::GetInstance().IsWindowClose());
@@ -204,14 +189,17 @@ int main(void)
 	point_light->ReleaseMemory();
 	ground->ReleaseMemory();
 	car->ReleaseMemory();
+	player->ReleaseMemory();
 	for (int i = 0; i < trees.size(); i++)
 	{
 		trees[i]->ReleaseMemory();
 	}
+	trees.clear();
 	for (int i = 0; i < buildings.size(); i++)
 	{
 		buildings[i]->ReleaseMemory();
 	}
+	buildings.clear();
 	Renderer::GetInstance().ReleaseMemory();
 	GameLogic::GetInstance().ReleaseMemory();
 	

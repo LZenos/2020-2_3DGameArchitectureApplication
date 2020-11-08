@@ -145,12 +145,11 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Object_Camera.cpp" />
-    <ClCompile Include="Object_Mesh.cpp" />
     <ClCompile Include="Object_NonRenderable.cpp" />
     <ClCompile Include="Object_Renderable.cpp" />
-    <ClCompile Include="Object_Sphere.cpp" />
     <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="SpinningSphere.cpp" />
     <ClCompile Include="Time.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -400,7 +399,7 @@
     <ClInclude Include="glm\vec3.hpp" />
     <ClInclude Include="glm\vec4.hpp" />
     <ClInclude Include="glm\vector_relational.hpp" />
-    <ClInclude Include="ICleanup.h" />
+    <ClInclude Include="ICleanUp.h" />
     <ClInclude Include="include\GLFW\glfw3.h" />
     <ClInclude Include="include\GLFW\glfw3native.h" />
     <ClInclude Include="include\GL\eglew.h" />
@@ -418,6 +417,7 @@
     <ClInclude Include="Object_Sphere.h" />
     <ClInclude Include="PlayerController.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="SpinningSphere.h" />
     <ClInclude Include="Time.h" />
   </ItemGroup>
   <ItemGroup>

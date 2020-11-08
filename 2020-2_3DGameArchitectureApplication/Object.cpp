@@ -1,23 +1,20 @@
 #include "Object.h"
 
-#include "FileManager.h"
+#include "GameLogic.h"
 
 
 Object::Object(std::string object_name)
 {
 	_objName = object_name;
 	
-	_worldPosition = glm::vec3(0, 0, 0);
-	_worldRotationDegree = 0.0f;
-	_worldRotationAxis = glm::vec3(0, 1, 0);
+	_position = glm::vec3(0, 0, 0);
+	_rotationDegree = 0.0f;
+	_rotationAxis = glm::vec3(0, 1, 0);
 	_scale = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	_parent = nullptr;
-}
 
-Object::~Object()
-{
-	
+	GameLogic::GetInstance().AddUpdatableObj(this);
 }
 
 
@@ -29,32 +26,32 @@ std::string Object::GetName() const
 
 void Object::SetObjectLocation(float x, float y, float z)
 {
-	_worldPosition = glm::vec3(x, y, z);
+	_position = glm::vec3(x, y, z);
 }
-void Object::SetObjectLocation(glm::vec3 world_pos)
+void Object::SetObjectLocation(glm::vec3 local_pos)
 {
-	_worldPosition = world_pos;
+	_position = local_pos;
 }
 
 glm::vec3 Object::GetObjectLocation() const
 {
-	return _worldPosition;
+	return _position;
 }
 
 
 void Object::SetObjectRotation(float degree, float x, float y, float z)
 {
-	_worldRotationDegree = degree;
-	_worldRotationAxis = glm::vec3(x, y, z);
+	_rotationDegree = degree;
+	_rotationAxis = glm::vec3(x, y, z);
 }
 
 float Object::GetObjectRotationDegree() const
 {
-	return _worldRotationDegree;
+	return _rotationDegree;
 }
 glm::vec3 Object::GetObjectRotationAxis() const
 {
-	return _worldRotationAxis;
+	return _rotationAxis;
 }
 
 
@@ -73,7 +70,17 @@ void Object::AttachTo(Object* parent)
 {
 	_parent = parent;
 
-	_worldPosition = _worldPosition - _parent->GetObjectLocation();
+	_position -= _parent->GetObjectLocation();
+	_rotationDegree -= _parent->GetObjectRotationDegree();
+	_scale = glm::vec3(
+		_scale.x / _parent->GetObjectScale().x,
+		_scale.y / _parent->GetObjectScale().y,
+		_scale.z / _parent->GetObjectScale().z);
+}
+
+bool Object::IsChild() const
+{
+	return (_parent != nullptr);
 }
 
 Object* Object::GetParent() const
