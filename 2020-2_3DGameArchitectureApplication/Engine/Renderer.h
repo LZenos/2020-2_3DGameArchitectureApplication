@@ -4,15 +4,16 @@
 
 #include <vector>
 
-#include "include/GL/glew.h"
-#include "include/GLFW/glfw3.h"
-#include "glm/glm.hpp";
-#include "glm/gtc/matrix_transform.hpp"
+#include "../include/GL/glew.h"
+#include "../include/GLFW/glfw3.h"
+#include "../glm/glm.hpp"
+#include "../glm/gtc/matrix_transform.hpp"
 
 
 class RenderableObject;
 class Camera;
 class Light;
+class RootScene;
 
 
 class Renderer : public ICleanUp
@@ -20,11 +21,13 @@ class Renderer : public ICleanUp
 private:
 	int _frameLimit;
 	float _curSec;
+
+	RootScene* _rootObj;
 	
 	GLFWwindow* _window;
 
 	std::vector<RenderableObject*> _renderableObjList;
-	Camera* _usingCamera;
+	Camera* _mainCamera;
 	std::vector<Light*> _lightList;
 
 	glm::mat4 _projectionMatrix;
@@ -46,6 +49,7 @@ public:
 	
 	bool IsWindowClose();
 
+	void RegistRootObject(RootScene* root_obj);
 	void AddObject(RenderableObject* obj);
 	void AddCamera(Camera* camera);
 	void AddLight(Light* light);

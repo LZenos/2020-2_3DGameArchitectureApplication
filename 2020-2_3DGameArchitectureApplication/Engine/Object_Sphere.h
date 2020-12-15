@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Object_Renderable.h"
+#include "RenderableObject.h"
 
 
 class Sphere : public RenderableObject
@@ -10,6 +10,6 @@ public:
 
 	virtual void Initialize(const char* vs_path = "vs.shader", const char* fs_path = "fs.shader")
 	{
-		RenderableObject::Initialize("Models/sphere.obj", "Textures/earth.dds", vs_path, fs_path);
+		RenderableObject::Initialize("../Models/sphere.obj", "../Textures/earth.dds", vs_path, fs_path);
 	}
 };

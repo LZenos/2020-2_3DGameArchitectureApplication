@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Object_NonRenderable.h"
+#include "NonRenderableObject.h"
 
 
 class Renderer;

@@ -1,13 +1,14 @@
 #pragma once
 
-#include "ICleanUp.h"
 #include "IUpdatable.h"
+#include "ICleanUp.h"
 
+#include <iostream>
 #include <string>
 #include <vector>
 
-#include "include/GL/glew.h"
-#include "glm/glm.hpp"
+#include "../include/GL/glew.h"
+#include "../glm/glm.hpp"
 
 
 class Object : public IUpdatable, public ICleanUp
@@ -26,11 +27,15 @@ public:
 	Object(std::string object_name);
 
 
-	virtual void Init() override = 0;
+	virtual void Init() override;
 
 	virtual void Update() override = 0;
 
 	virtual void Render() = 0;
+
+	virtual void OnCollision(class BoxCollider* other) = 0;
+
+	virtual void ReleaseMemory() override = 0;
 
 
 	std::string GetName() const;
@@ -40,6 +45,8 @@ public:
 	void SetObjectLocation(glm::vec3 local_pos);
 
 	glm::vec3 GetObjectLocation() const;
+
+	virtual glm::vec3 GetObjectWorldLocation();
 
 
 	void SetObjectRotation(float degree, float x, float y, float z);
@@ -53,12 +60,15 @@ public:
 	glm::vec3 GetObjectScale() const;
 
 
-	void AttachTo(Object* parent);
-
-	bool IsChild() const;
+	void SetParent(Object* parent);
 
 	Object* GetParent() const;
 
+	bool IsChild() const;
 
-	virtual void ReleaseMemory() override = 0;
+
+	template <typename T> T* Cast(Object* obj_to_cast);
+	template <typename T> bool CheckType(Object* obj);
+
+	virtual void SearchRenderableObjFromSceneGraph() = 0;
 };

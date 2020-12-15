@@ -2,8 +2,8 @@
 
 #include <vector>
 
-#include "include/GL/glew.h"
-#include "glm/glm.hpp"
+#include "../include/GL/glew.h"
+#include "../glm/glm.hpp"
 
 
 class FileManager

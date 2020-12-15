@@ -1,7 +1,7 @@
 #pragma once
 
-#include "include/GL/glew.h"
-#include "include/GLFW/glfw3.h"
+#include "../include/GL/glew.h"
+#include "../include/GLFW/glfw3.h"
 
 
 enum class Movement

@@ -1,11 +1,14 @@
-#include "Time.h"
-#include "Renderer.h"
-#include "GameLogic.h"
-#include "PlayerController.h"
-#include "Object_Camera.h"
-#include "Object_Light.h"
-#include "Object_Mesh.h"
+#include "Engine/Time.h"
+#include "Engine/Renderer.h"
+#include "Engine/GameLogic.h"
+#include "Engine/PlayerController.h"
+#include "Engine/Object_Root.h"
+#include "Engine/Object_Camera.h"
+#include "Engine/Object_Light.h"
+#include "Engine/Object_BoxCollider.h"
+#include "Engine/Object_Mesh.h"
 #include "SpinningSphere.h"
+#include "PlayerObject.h"
 
 #include <vector>
 
@@ -13,8 +16,8 @@
 int main(void)
 {
 	// 상수
-	const int tree_num = 1;
-	const int buiding_num = 6;
+	const int tree_num = 24;
+	const int buiding_num = 12;
 	
 	
 	// 렌더러 객체 초기화
@@ -22,117 +25,80 @@ int main(void)
 	Renderer::GetInstance().InitRenderSettings();
 
 	
-	// 오브젝트 객체 생성
+	// 루트 씬 객체 생성. 모든 객체가 여기에 컴포넌트식으로 붙게 되며, 관리와 삭제가 계층식으로 이루어집니다.
+	RootScene* root_scene = new RootScene("Root Scene");
+
+	// 오브젝트(컴포넌트) 객체 생성
 	Camera* main_camera = new Camera();
+
+	PlayerController* playerControl = new PlayerController();
+	PlayerObject* playerCharacter = new PlayerObject();
+	BoxCollider* playerCollider = new BoxCollider("Player Collider");
 	Light* point_light = new Light();
+
 	SpinningSphere* ground = new SpinningSphere("Ground");
-	Mesh* car = new Mesh("Car");
 	std::vector<Mesh*> trees;
 	for (int i = 0; i < tree_num; i++)
 	{
 		trees.push_back(new Mesh("Tree"));
+	}
+	std::vector<BoxCollider*> treeColliders;
+	for (int i = 0; i < tree_num; i++)
+	{
+		treeColliders.push_back(new BoxCollider("Tree Collider"));
 	}
 	std::vector<Mesh*> buildings;
 	for (int i = 0; i < buiding_num; i++)
 	{
 		buildings.push_back(new Mesh("Building"));
 	}
-
-	// 플레이어 컨트롤러 객체 생성
-	PlayerController* player = new PlayerController(car);
+	float tree_positioning[tree_num] = {
+		-2, -2, -2,  0, -2, -2,  0,  0,  0, -2, -2, -2,
+		 2,  2,  2,  2,  2,  0,  0,  2,  2,  2,  0,  0
+	};
 
 	// 오브젝트 설정
 	main_camera->Initialize(glm::vec3(0.0f, 115.0f, 21.0f), glm::vec3(0.0f, 100.0f, -5.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	playerCharacter->Initialize("Models/car.obj", "Textures/car.dds");
+	playerCharacter->SetObjectLocation(0.0f, 100.3f, 0.0f);
+	playerCollider->SetObjectLocation(0.0f, 100.3f, 0.0f);
+	playerCollider->SetBoxExtent(1.0f, 1.0f, 2.0f);
+	point_light->SetObjectLocation(0.0f, 100.3f, -4.0f);
+	playerControl->SetPlayableCharacter(playerCharacter);
+
+	root_scene->AttachComponent(main_camera);
+	root_scene->AttachComponent(playerControl);
+	root_scene->AttachComponent(playerCharacter);
+	playerCharacter->AttachComponent(playerCollider);
+	playerCharacter->AttachComponent(point_light);
+
 	ground->Initialize("Models/huge sphere.obj", "Textures/moon.dds");
-	car->Initialize("Models/car.obj", "Textures/car.dds");
+	root_scene->AttachComponent(ground);
 	for (int i = 0; i < tree_num; i++)
 	{
 		trees[i]->Initialize("Models/tree.obj", "Textures/tree.dds");
-
-		glm::vec2 pos;
-		switch (i % 12)
-		{
-		case 0:
-			pos = glm::vec2(99.2f, 0.0f);
-			break;
-		case 1:
-			pos = glm::vec2(95.9f, 25.6f);
-			break;
-		case 2:
-			pos = glm::vec2(85.9f, 49.5f);
-			break;
-		case 3:
-			pos = glm::vec2(70.1f, 70.1f);
-			break;
-		case 4:
-			pos = glm::vec2(49.5f, 85.9f);
-			break;
-		case 5:
-			pos = glm::vec2(25.6f, 95.9f);
-			break;
-		case 6:
-			pos = glm::vec2(0.0f, 99.2f);
-			break;
-		case 7:
-			pos = glm::vec2(-25.6f, 95.9f);
-			break;
-		case 8:
-			pos = glm::vec2(-49.5f, 85.9f);
-			break;
-		case 9:
-			pos = glm::vec2(-70.1f, 70.1f);
-			break;
-		case 10:
-			pos = glm::vec2(-85.9f, 49.5f);
-			break;
-		case 11:
-			pos = glm::vec2(-95.9f, 25.6f);
-			break;
-		}
-		if (i < 24)
-		{
-			if (i >= 12)
-			{
-				pos *= -1.0f;
-			}
-			trees[i]->SetObjectLocation(-5.0f, pos.x, pos.y);
-		}
-		else
-		{
-			if (i >= 36)
-			{
-				pos *= -1.0f;
-			}
-			trees[i]->SetObjectLocation(5.0f, pos.x, pos.y);
-		}
-		trees[i]->SetObjectRotation(15.0f * i, 1.0f, 0.0f, 0.0f);
-
-		trees[i]->AttachTo(ground);
-	}
-	for (int i = 0; i < buiding_num; i++)
-	{
-		buildings[i]->Initialize("Models/building.obj", "Textures/building.dds");
+		treeColliders[i]->SetBoxExtent(0.5f, 0.5f, 0.5f);
 
 		glm::vec2 pos;
 		switch (i % 6)
 		{
 		case 0:
-			pos = glm::vec2(98.0f, 0.0f);
+			pos = glm::vec2(99.2f, 0.0f);
 			break;
 		case 1:
-			pos = glm::vec2(84.9f, 49.0f);
+			pos = glm::vec2(85.9f, 49.5f);
 			break;
 		case 2:
-			pos = glm::vec2(49.0f, 84.9f);
+			pos = glm::vec2(49.5f, 85.9f);
 			break;
 		case 3:
-			pos = glm::vec2(0.0f, 98.0f);
+			pos = glm::vec2(0.0f, 99.2f);
 			break;
 		case 4:
-			pos = glm::vec2(-49.0f, 84.9f);
+			pos = glm::vec2(-49.5f, 85.9f);
 			break;
 		case 5:
-			pos = glm::vec2(-84.9f, 49.0f);
+			pos = glm::vec2(-85.9f, 49.5f);
 			break;
 		}
 		if (i < 12)
@@ -141,7 +107,7 @@ int main(void)
 			{
 				pos *= -1.0f;
 			}
-			buildings[i]->SetObjectLocation(-13.0f, pos.x, pos.y);
+			trees[i]->SetObjectLocation(tree_positioning[i], pos.x, pos.y);
 		}
 		else
 		{
@@ -149,29 +115,57 @@ int main(void)
 			{
 				pos *= -1.0f;
 			}
+			trees[i]->SetObjectLocation(tree_positioning[i], pos.x, pos.y);
+		}
+		trees[i]->SetObjectRotation(30.0f * i, 1.0f, 0.0f, 0.0f);
+
+		treeColliders[i]->SetObjectLocation(trees[i]->GetObjectLocation());
+
+		ground->AttachComponent(trees[i]);
+		trees[i]->AttachComponent(treeColliders[i]);
+	}
+	for (int i = 0; i < buiding_num; i++)
+	{
+		buildings[i]->Initialize("Models/building.obj", "Textures/building.dds");
+
+		glm::vec2 pos;
+		switch (i % 3)
+		{
+		case 0:
+			pos = glm::vec2(98.0f, 0.0f);
+			break;
+		case 1:
+			pos = glm::vec2(49.0f, 84.9f);
+			break;
+		case 2:
+			pos = glm::vec2(-49.0f, 84.9f);
+			break;
+		}
+		if (i < 6)
+		{
+			if (i >= 3)
+			{
+				pos *= -1.0f;
+			}
+			buildings[i]->SetObjectLocation(-13.0f, pos.x, pos.y);
+		}
+		else
+		{
+			if (i >= 9)
+			{
+				pos *= -1.0f;
+			}
 			buildings[i]->SetObjectLocation(13.0f, pos.x, pos.y);
 		}
-		buildings[i]->SetObjectRotation(30.0f * i, 1.0f, 0.0f, 0.0f);
+		buildings[i]->SetObjectRotation(60.0f * i, 1.0f, 0.0f, 0.0f);
 		buildings[i]->SetObjectScale(0.5f, 0.5f, 0.5f);
 
-		buildings[i]->AttachTo(ground);
+		ground->AttachComponent(buildings[i]);
 	}
-	
-	point_light->SetObjectLocation(0.0f, 100.3f, -4.0f);
-	car->SetObjectLocation(0.0f, 100.3f, 0.0f);
-
-	point_light->AttachTo(car);
-
-
-	// 카메라 설정
-	Renderer::GetInstance().AddCamera(main_camera);
-
-	// 빛 추가
-	Renderer::GetInstance().AddLight(point_light);
 
 	
 	// Init 호출
-	GameLogic::GetInstance().Init();
+	GameLogic::GetInstance().InitScene();
 	
 	// 루프
 	do
@@ -179,29 +173,17 @@ int main(void)
 		Time::GetInstance().Tick();
 		
 		Renderer::GetInstance().Render();
-		GameLogic::GetInstance().Update();
+		GameLogic::GetInstance().UpdateScene();
 	}
 	while (Renderer::GetInstance().IsWindowClose());
 
 
 	// 메모리 해제
-	main_camera->ReleaseMemory();
-	point_light->ReleaseMemory();
-	ground->ReleaseMemory();
-	car->ReleaseMemory();
-	player->ReleaseMemory();
-	for (int i = 0; i < trees.size(); i++)
-	{
-		trees[i]->ReleaseMemory();
-	}
-	trees.clear();
-	for (int i = 0; i < buildings.size(); i++)
-	{
-		buildings[i]->ReleaseMemory();
-	}
-	buildings.clear();
+	root_scene->ReleaseMemory();
 	Renderer::GetInstance().ReleaseMemory();
 	GameLogic::GetInstance().ReleaseMemory();
+	trees.clear();
+	buildings.clear();
 	
 	return 0;
 }

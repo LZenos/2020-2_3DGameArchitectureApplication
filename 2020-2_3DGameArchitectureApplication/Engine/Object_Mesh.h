@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Object_Renderable.h"
+#include "RenderableObject.h"
 
 
 class Mesh : public RenderableObject

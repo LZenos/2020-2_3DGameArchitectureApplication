@@ -30,5 +30,5 @@ void main()
 	float cosAlpha = clamp(dot(E, R), 0, 1);
 
 	color = (MaterialDiffuseColor * LightColor * LightPower * cosTheta / (distance * distance)) +
-		(MaterialDiffuseColor * 0.15);
+		(MaterialDiffuseColor * 0.05);
 }

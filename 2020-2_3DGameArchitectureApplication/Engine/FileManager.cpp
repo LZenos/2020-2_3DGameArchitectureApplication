@@ -8,10 +8,10 @@
 #include <sstream>
 #include <algorithm>
 
-#include "include/GL/glew.h"
-#include "include/GLFW/glfw3.h" 
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
+#include "../include/GL/glew.h"
+#include "../include/GLFW/glfw3.h" 
+#include "../glm/glm.hpp"
+#include "../glm/gtc/matrix_transform.hpp"
 
 #define FOURCC_DXT1 0x31545844
 #define FOURCC_DXT3 0x33545844

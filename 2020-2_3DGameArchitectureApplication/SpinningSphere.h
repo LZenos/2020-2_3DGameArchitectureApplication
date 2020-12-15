@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Object_Renderable.h"
+#include "Engine/RenderableObject.h"
 
 
 class SpinningSphere : public RenderableObject

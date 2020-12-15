@@ -4,29 +4,32 @@
 #include "GameLogic.h"
 #include "Object.h"
 
-#include "glm/glm.hpp"
+#include "../glm/glm.hpp"
 
 
-PlayerController::PlayerController(Object* playerable_character)
+PlayerController::PlayerController() : NonRenderableObject("Player Controller")
 {
-	_characterObject = playerable_character;
+	_characterObject = nullptr;
 
 	_moveSpeed = 2.0f;
-
-	GameLogic::GetInstance().AddUpdatableObj(this);
 }
 
-PlayerController::~PlayerController()
+
+void PlayerController::Update()
 {
-	
+	Move();
 }
 
+
+void PlayerController::SetPlayableCharacter(Object* character_obj)
+{
+	_characterObject = character_obj;
+}
 
 void PlayerController::SetSpeed(float new_speed)
 {
 	_moveSpeed = new_speed * ((new_speed > 0) - (new_speed < 0));
 }
-
 
 void PlayerController::Move()
 {
@@ -52,20 +55,4 @@ void PlayerController::Move()
 		}
 		break;
 	}
-}
-
-void PlayerController::Init()
-{
-
-}
-
-void PlayerController::Update()
-{
-	Move();
-}
-
-
-void PlayerController::ReleaseMemory()
-{
-	delete this;
 }

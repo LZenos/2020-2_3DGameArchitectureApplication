@@ -1,4 +1,5 @@
 #include "Object_Camera.h"
+#include "Renderer.h"
 
 
 Camera::Camera(std::string object_name) : NonRenderableObject(object_name)
@@ -9,6 +10,8 @@ Camera::Camera(std::string object_name) : NonRenderableObject(object_name)
 	_aspect = (4.0f / 3.0f);
 	_near = 0.1f;
 	_far = 200.0f;
+
+	Renderer::GetInstance().AddCamera(this);
 }
 
 void Camera::Initialize(glm::vec3 camera_pos, glm::vec3 aim_pos, glm::vec3 up_vector,

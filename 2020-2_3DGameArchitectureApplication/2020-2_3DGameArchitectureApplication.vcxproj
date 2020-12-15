@@ -139,22 +139,41 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="FileManager.cpp" />
-    <ClCompile Include="GameLogic.cpp" />
-    <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="Engine\CompositeObject.cpp" />
+    <ClCompile Include="Engine\FileManager.cpp" />
+    <ClCompile Include="Engine\GameLogic.cpp" />
+    <ClCompile Include="Engine\InputManager.cpp" />
+    <ClCompile Include="Engine\Object_BoxCollider.cpp" />
+    <ClCompile Include="PlayerObject.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Object.cpp" />
-    <ClCompile Include="Object_Camera.cpp" />
-    <ClCompile Include="Object_NonRenderable.cpp" />
-    <ClCompile Include="Object_Renderable.cpp" />
-    <ClCompile Include="PlayerController.cpp" />
-    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Engine\Object.cpp" />
+    <ClCompile Include="Engine\Object_Camera.cpp" />
+    <ClCompile Include="Engine\PlayerController.cpp" />
+    <ClCompile Include="Engine\RenderableObject.cpp" />
+    <ClCompile Include="Engine\Renderer.cpp" />
+    <ClCompile Include="Engine\Time.cpp" />
     <ClCompile Include="SpinningSphere.cpp" />
-    <ClCompile Include="Time.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FileManager.h" />
-    <ClInclude Include="GameLogic.h" />
+    <ClInclude Include="Engine\CompositeObject.h" />
+    <ClInclude Include="Engine\FileManager.h" />
+    <ClInclude Include="Engine\GameLogic.h" />
+    <ClInclude Include="Engine\ICleanUp.h" />
+    <ClInclude Include="Engine\InputManager.h" />
+    <ClInclude Include="Engine\IUpdatable.h" />
+    <ClInclude Include="Engine\NonRenderableObject.h" />
+    <ClInclude Include="Engine\Object.h" />
+    <ClInclude Include="Engine\Object_BoxCollider.h" />
+    <ClInclude Include="Engine\Object_Camera.h" />
+    <ClInclude Include="Engine\Object_Light.h" />
+    <ClInclude Include="Engine\Object_Mesh.h" />
+    <ClInclude Include="Engine\Object_Root.h" />
+    <ClInclude Include="Engine\Object_Sphere.h" />
+    <ClInclude Include="Engine\PlayerController.h" />
+    <ClInclude Include="PlayerObject.h" />
+    <ClInclude Include="Engine\RenderableObject.h" />
+    <ClInclude Include="Engine\Renderer.h" />
+    <ClInclude Include="Engine\Time.h" />
     <ClInclude Include="glm\common.hpp" />
     <ClInclude Include="glm\detail\compute_common.hpp" />
     <ClInclude Include="glm\detail\compute_vector_relational.hpp" />
@@ -399,26 +418,13 @@
     <ClInclude Include="glm\vec3.hpp" />
     <ClInclude Include="glm\vec4.hpp" />
     <ClInclude Include="glm\vector_relational.hpp" />
-    <ClInclude Include="ICleanUp.h" />
     <ClInclude Include="include\GLFW\glfw3.h" />
     <ClInclude Include="include\GLFW\glfw3native.h" />
     <ClInclude Include="include\GL\eglew.h" />
     <ClInclude Include="include\GL\glew.h" />
     <ClInclude Include="include\GL\glxew.h" />
     <ClInclude Include="include\GL\wglew.h" />
-    <ClInclude Include="InputManager.h" />
-    <ClInclude Include="IUpdatable.h" />
-    <ClInclude Include="Object_Light.h" />
-    <ClInclude Include="Object.h" />
-    <ClInclude Include="Object_Camera.h" />
-    <ClInclude Include="Object_Mesh.h" />
-    <ClInclude Include="Object_NonRenderable.h" />
-    <ClInclude Include="Object_Renderable.h" />
-    <ClInclude Include="Object_Sphere.h" />
-    <ClInclude Include="PlayerController.h" />
-    <ClInclude Include="Renderer.h" />
     <ClInclude Include="SpinningSphere.h" />
-    <ClInclude Include="Time.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="glm\detail\func_common.inl" />

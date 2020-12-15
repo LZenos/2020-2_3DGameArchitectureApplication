@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Object.h"
+#include "CompositeObject.h"
 
-#include "glm/glm.hpp";
-#include "glm/gtc/matrix_transform.hpp"
+#include "../glm/glm.hpp"
+#include "../glm/gtc/matrix_transform.hpp"
 
 
-class RenderableObject : public Object
+class RenderableObject : public CompositeObject
 {
 private:
 	GLuint _vertexArrayID;
@@ -32,10 +32,14 @@ private:
 	GLuint _uvBuffer;
 	GLuint _normalBuffer;
 
+	std::vector<glm::vec3>* _relativeLightPos;
+
+	bool _isInitialized;
+
 public:
 	RenderableObject(std::string object_name);
 
-	virtual void Initialize(const char* obj_file_path, const char* dds_file_path, const char* vs_path = "vs.shader", const char* fs_path = "fs.shader");
+	virtual void Initialize(const char* obj_file_path, const char* dds_file_path, const char* vs_path = "Engine/vs.shader", const char* fs_path = "Engine/fs.shader");
 
 
 	virtual void Init() override;
@@ -43,6 +47,8 @@ public:
 	virtual void Update() override;
 
 	virtual void Render() override;
+
+	virtual void OnCollision(BoxCollider* other) override;
 
 
 	void UniformShaderRelativeLightPos(glm::vec3 light_worldPos);	
